@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block scripts %}
+    {{ super() }}
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+{% endblock %}
+{% block app_content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="center-block text-center">
+                        <h1> Welcome {{ user.username }}</h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-10 col-md-offset-1">
+                        <ul id="message-list" class="list-group">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
