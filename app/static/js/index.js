@@ -4,7 +4,7 @@ $(function () {
 
 function loadMessages() {
     $.ajax({
-        url: '/api/messages',
+        url: '/messages',
         success: function (response) {
             let messages = response.messages;
             console.log(messages);
@@ -73,7 +73,7 @@ function updateMessageSequence(event, ui) {
     console.log(newSequence);
     $.ajax({
         type: 'POST',
-        url: '/api/update-message-sequence',
+        url: '/update/message-sequence',
         contentType: 'application/json',
         data: JSON.stringify({
             "message_id": ui.item.attr('data-message-id'),

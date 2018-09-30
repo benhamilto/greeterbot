@@ -3,6 +3,8 @@ import jwt
 import datetime
 from flask import render_template, redirect, request, url_for, flash, make_response, jsonify, json
 from flask_login import current_user, login_user, logout_user, login_required
+from twilio.request_validator import RequestValidator
+
 from app.forms import LoginForm
 from app.forms import RegistrationForm
 from app.models import User, PhoneNumber, Message, UserSchema, PhoneNumberSchema, MessageSchema
@@ -67,6 +69,14 @@ def logout():
     return redirect(url_for('index'))
 
 
+@app.route('/messages', methods=["GET"])
+@login_required
+def get_messages():
+    messages = Message.query.order_by(Message.sequence).all()
+    result = messages_schema.dump(messages).data
+    return jsonify({'messages': result})
+
+
 @app.route('/delete/message/<int:message_id>', methods=['DELETE'])
 @login_required
 def delete_message(message_id):
@@ -76,6 +86,19 @@ def delete_message(message_id):
         return jsonify({'message': 'message deleted successfully'}), 200
     return jsonify({'message': 'message does not exist'}), 400
 
+
+@app.route('/update/message-sequence', methods=["POST", "GET"])
+@login_required
+def update_message_sequence():
+    print(request.json)
+    if not request.json or not 'message_id' in request.json or not 'new_sequence' in request.json:
+        return make_response('Missing arguments', 400)
+    message_id = request.json['message_id']
+    message = Message.query.get(message_id)
+    if message is None:
+        return make_response('That message does not exist', 404)
+    message.insert_in_sequence(request.json['new_sequence'])
+    return make_response('Sequence successfully updated', 200)
 
 
 def token_required(f):
@@ -99,6 +122,27 @@ def token_required(f):
 
     return decorated
 
+def validate_twilio_request(f):
+    """Validates that incoming requests genuinely originated from Twilio"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        # Create an instance of the RequestValidator class
+        validator = RequestValidator(os.environ.get('TWILIO_AUTH_TOKEN'))
+
+        # Validate the request using its URL, POST data,
+        # and X-TWILIO-SIGNATURE header
+        request_valid = validator.validate(
+            request.url,
+            request.form,
+            request.headers.get('X-TWILIO-SIGNATURE', ''))
+
+        # Continue processing the request if it's valid, return a 403 error if
+        # it's not
+        if request_valid:
+            return f(*args, **kwargs)
+        else:
+            return abort(403)
+    return decorated_function
 
 @app.route('/api/login', methods=['POST'])
 def api_login():
@@ -164,15 +208,8 @@ def get_user(username):
     return make_response('No user found with that username', 404)
 
 
-@app.route('/api/messages', methods=["GET"])
-@login_required
-def get_messages():
-    messages = Message.query.order_by(Message.sequence).all()
-    result = messages_schema.dump(messages).data
-    return jsonify({'messages': result})
-
-
 @app.route('/api/create/message', methods=["POST"])
+@token_required
 def create_message():
     if not request.json or not 'phone_number' in request.json or not 'message_text' in request.json:
         return make_response('Missing arguments', 400)
@@ -196,20 +233,24 @@ def get_phone_numbers():
     return jsonify({'phone_numbers': result})
 
 
-@app.route('/api/update-message-sequence', methods=["POST", "GET"])
-@login_required
-def update_message_sequence():
-    print(request.json)
-    if not request.json or not 'message_id' in request.json or not 'new_sequence' in request.json:
-        return make_response('Missing arguments', 400)
-    message_id = request.json['message_id']
-    message = Message.query.get(message_id)
-    if message is None:
-        return make_response('That message does not exist', 404)
-    message.insert_in_sequence(request.json['new_sequence'])
-    return make_response('Sequence successfully updated', 200)
+@app.route('/api/messages', methods=["GET"])
+@token_required
+def api_get_messages():
+    messages = Message.query.order_by(Message.sequence).all()
+    result = messages_schema.dump(messages).data
+    return jsonify({'messages': result})
 
 
+@app.route('/api/pop-message', methods=["GET"])
+@token_required
+def api_pop_message():
+    message = Message.query.order_by(Message.sequence).first()
+    result = message_schema.dump(message).data
+    message.delete()
+    return jsonify(result)
+
+
+@validate_twilio_request
 @app.route('/sms', methods=['GET', 'POST'])
 def handle_sms():
     from_number = request.values.get('From')
