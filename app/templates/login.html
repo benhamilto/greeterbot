@@ -21,12 +21,12 @@
 						<div class="row">
 							<div class="col-lg-12">
 								<form id="login-form" action="" method="post" role="form" style="display: block;">
-                                    {{ login_form.hidden_tag() }}
+                                    {{ login_form.hidden_tag(id="login-tag") }}
                                     <div class="form-group">
-                                        {{ login_form.email(class="form-control",id="email", required="required", type="text", tabindex="1", placeholder="Email", value="") }}
+                                        {{ login_form.email(class="form-control",id="login-email", required="required", type="text", tabindex="1", placeholder="Email", value="") }}
                                     </div>
 									<div class="form-group">
-                                        {{ login_form.password(class="form-control", id="password", type="password", required="required", placeholder="Password") }}
+                                        {{ login_form.password(class="form-control", id="login-password", type="password", required="required", placeholder="Password") }}
 									</div>
 									<div class="form-group text-center">
                                         {{ login_form.remember_me(id="remember") }}
@@ -50,15 +50,15 @@
 									</div>
 								</form>
 								<form id="register-form" action="{{ url_for('register') }}" method="post" role="form" style="display: none;">
-                                    {{ register_form.hidden_tag()}}
+                                    {{ register_form.hidden_tag(id="register-tag")}}
 									<div class="form-group">
                                         {{ register_form.username(type="text",id="username", tabindex="1", class="form-control", placeholder="Username", value="") }}
 									</div>
 									<div class="form-group">
-                                        {{ register_form.email(type="text",  id="email", tabindex="2", class="form-control", placeholder="Email", value="") }}
+                                        {{ register_form.email(type="text",  id="register-email", tabindex="2", class="form-control", placeholder="Email", value="") }}
 									</div>
 									<div class="form-group">
-                                        {{ register_form.password(type="text", id="password", tabindex="3", class="form-control", type="password", placeholder="Password", value="") }}
+                                        {{ register_form.password(type="text", id="register-password", tabindex="3", class="form-control", type="password", placeholder="Password", value="") }}
 									</div>
 									<div class="form-group">
                                         {{ register_form.password2(type="text",  id="password2", tabindex="4", class="form-control", type="password", placeholder="Confirm Password", value="") }}
