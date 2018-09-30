@@ -30,7 +30,7 @@ def index():
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
-    login_form = LoginForm()
+    login_form = LoginForm(prefix="login-form")
     register_form = RegistrationForm()
     if login_form.validate_on_submit():
         user = User.query.filter_by(email=login_form.email.data).first()
