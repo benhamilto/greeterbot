@@ -7,7 +7,6 @@ function loadMessages() {
         url: '/messages',
         success: function (response) {
             let messages = response.messages;
-            console.log(messages);
             let messageList = $('#message-list');
             messageList.empty();
             messageList.append(
@@ -56,7 +55,6 @@ function loadMessages() {
             });
 
             $('.message-field').blur(function () {
-                console.log(this);
                 $(`${this.id}`).attr('readonly', true);
             });
         },
@@ -69,8 +67,6 @@ function loadMessages() {
 function updateMessageSequence(event, ui) {
     let posChange = ui.item.index() - ui.item.startPos;
     let newSequence = parseInt(ui.item.attr('data-seq-id')) + posChange;
-    console.log(posChange);
-    console.log(newSequence);
     $.ajax({
         type: 'POST',
         url: '/update/message-sequence',
@@ -80,7 +76,6 @@ function updateMessageSequence(event, ui) {
             "new_sequence": newSequence,
         }),
         success: function (response) {
-            console.log(response);
         },
         error: function (response) {
         }
@@ -95,7 +90,6 @@ function deleteMessage(id) {
             loadMessages();
         },
         error: function (response) {
-            console.log(response);
         }
     })
 }

@@ -7,6 +7,11 @@
     Greeterbot
 {% endblock %}
 
+{% block styles %}
+    {{ super() }}
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}">
+{% endblock %}
 {% block navbar %}
     <nav class="navbar navbar-default">
         <div class="nav-title text-center">
@@ -18,7 +23,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
+    <div id="main-container" class="container">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
             {% for message in messages %}

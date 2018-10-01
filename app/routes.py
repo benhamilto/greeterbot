@@ -144,6 +144,7 @@ def validate_twilio_request(f):
             return jsonify({'message': 'Unable to validate twilio request'}), 403
     return decorated_function
 
+
 @app.route('/api/login', methods=['POST'])
 def api_login():
     if not request.is_json:
