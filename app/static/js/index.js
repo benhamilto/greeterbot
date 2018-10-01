@@ -12,15 +12,17 @@ function loadMessages() {
             messageList.append(
                 messages.map(message =>
                     `<li class='list-group-item message-item' data-seq-id='${message.sequence}' data-message-id='${message.id}'>
-                        <div class="row">
+                        <div class="row vertical-align">
                             <div class="col-md-10 col-sm-10">
-                                <div class="col-md-3 col-sm-3">
-                                    <i class="fa fa-phone"></i>
-                                    ${message.phone_number.phone_number}
-                                </div>
-                                <div class="col-md-9 col-sm-9">
-                                    <i class="fa fa-comment"></i>
-                                    <input id="message-field-${message.id}" class="message-field" type="text" value="${message.message_text}" readonly/>
+                                <div class="row">
+                                    <div class="col-md-3 col-sm-3 phone-number">
+                                        <i class="fa fa-phone"></i>
+                                        ${message.phone_number.phone_number}
+                                    </div>
+                                    <div class="col-md-8 col-sm-8 comment">
+                                        <i class="fa fa-comment"></i>
+                                        <input id="message-field-${message.id}" class="message-field" type="text" value="${message.message_text}" readonly/>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-2 col-sm-2">

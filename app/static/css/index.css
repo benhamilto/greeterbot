@@ -1,8 +1,12 @@
+input {
+    width: 80%;
+}
 input:-moz-read-only { /* For Firefox */
     outline: none;
 }
 
 input:read-only {
+    background-color: transparent;
     outline: none;
     border: none;
     -webkit-box-shadow: none;
@@ -15,4 +19,35 @@ input:read-only {
     -webkit-box-shadow: 0 8px 6px -6px #999;
     -moz-box-shadow: 0 8px 6px -6px #999;
     box-shadow: 0 8px 6px -6px #999;
+}
+
+/* list */
+#message-list {
+    counter-reset: li; /* Initiate a counter */
+}
+
+#message-list > li {
+    position: relative; /* Create a positioning context */
+    list-style: none; /* Disable the normal item numbering */
+    background: #f6f6f6; /* Item background color */
+    padding-left: 15px; /* Add some spacing around the content */
+    padding-bottom: 0px;
+    padding-top: 0px;
+}
+
+/* number  */
+li:before {
+    content: counter(li);
+    counter-increment: li;
+    position: absolute;
+    left: -0.5em;
+    top: 50%;
+
+    /* number background */
+    height: 100%;
+    width: 2em;
+    margin-top: -1em;
+    line-height: 1.5em;
+    text-align: center;
+    font-weight: bold;
 }
