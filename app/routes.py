@@ -90,7 +90,6 @@ def delete_message(message_id):
 @app.route('/update/message-sequence', methods=["POST", "GET"])
 @login_required
 def update_message_sequence():
-    print(request.json)
     if not request.json or not 'message_id' in request.json or not 'new_sequence' in request.json:
         return make_response('Missing arguments', 400)
     message_id = request.json['message_id']
@@ -105,15 +104,12 @@ def token_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         auth_header = request.headers.get('Authorization')
-        print("header")
-        print(auth_header)
         if auth_header:
             auth_token = auth_header.split(" ")[1]
         else:
             auth_token = ''
         if not auth_token:
             return jsonify({'message': 'Token is missing!'}), 403
-        print(auth_token)
         try:
             data = jwt.decode(auth_token, app.config['SECRET_KEY'])
         except:
