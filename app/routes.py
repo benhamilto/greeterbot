@@ -247,7 +247,8 @@ def api_get_messages():
 def api_pop_message():
     message = Message.query.order_by(Message.sequence).first()
     result = message_schema.dump(message).data
-    message.delete()
+    if message is not None:
+        message.delete()
     return jsonify(result)
 
 
