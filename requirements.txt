@@ -20,7 +20,7 @@ gunicorn==19.9.0
 idna==2.8
 itsdangerous==0.24
 Jinja2==2.10.1
-Mako==1.0.7
+Mako==1.2.2
 MarkupSafe==1.1.1
 marshmallow==2.15.6
 marshmallow-sqlalchemy==0.14.1
